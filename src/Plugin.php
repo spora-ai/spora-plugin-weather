@@ -5,14 +5,9 @@ declare(strict_types=1);
 namespace Spora\Plugins\Weather;
 
 use Spora\Plugins\AbstractPlugin;
+use Spora\Plugins\Weather\Tools\WeatherApiTool;
 
 /**
- * Placeholder plugin entry point for the Weather extraction (v0.1.0).
- *
- * The real tool class lands in a follow-up release. This file declares the
- * plugin and an empty hook surface so the framework can install, boot, and
- * inspect it before any tools are available.
- *
  * WeatherAPI.com current conditions and forecasts for Spora agents.
  */
 final class WeatherPlugin extends AbstractPlugin
@@ -25,6 +20,8 @@ final class WeatherPlugin extends AbstractPlugin
     /** @return array<class-string<\Spora\Tools\ToolInterface>> */
     public function tools(): array
     {
-        return [];
+        return [
+            WeatherApiTool::class,
+        ];
     }
 }
