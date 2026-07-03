@@ -16,12 +16,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Spora\\\\Plugins\\\\Weather\\\\": "src/"
+      "Spora\\Plugins\\Weather\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Spora\\\\Plugins\\\\Weather\\\\Tests\\\\": "tests/"
+      "Spora\\Plugins\\Weather\\Tests\\": "tests/"
     }
   },
   "scripts": {
