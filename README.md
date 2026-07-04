@@ -4,7 +4,7 @@ Adds [WeatherAPI.com](https://www.weatherapi.com) **current conditions,
 multi-day forecasts, location autocomplete, and astronomy (sunrise /
 sunset / moon phase)** data to
 [Spora](https://github.com/spora-ai/Spora) agents. Supports both metric
-and imperial units. A free tier is available.
+and imperial units. A free tier is available (100k calls/month).
 
 ## Installation
 
@@ -72,7 +72,7 @@ composer install
 ./vendor/bin/php-cs-fixer fix --dry-run --diff
 ```
 
-CI: `.github/workflows/ci.yml` — Pest on PHP 8.4, PHPStan, and
+CI: `.github/workflows/ci.yml` — Pest on PHP 8.4 + 8.5, PHPStan, and
 php-cs-fixer dry-run. The `sonar` job uploads coverage to SonarCloud
 (project key `spora-ai_spora-plugin-weather`) so the `new_coverage`
 metric is measurable per PR; requires the `SONAR_TOKEN` secret in the
