@@ -4,11 +4,7 @@ Adds [WeatherAPI.com](https://www.weatherapi.com) **current conditions,
 multi-day forecasts, location autocomplete, and astronomy (sunrise /
 sunset / moon phase)** data to
 [Spora](https://github.com/spora-ai/Spora) agents. Supports both metric
-and imperial units.
-
-Sign up at <https://www.weatherapi.com> — the free tier covers
-1,000,000 calls/month (paid plans start around $10/month for higher
-limits).
+and imperial units. A free tier is available.
 
 ## Installation
 
@@ -61,8 +57,7 @@ from log lines.
 
 ## Vendor
 
-- **Sign up & pricing**: <https://www.weatherapi.com> — free tier
-  1,000,000 calls/month, paid plans from ~$10/month.
+- **Sign up**: <https://www.weatherapi.com>
 - **API documentation**: <https://www.weatherapi.com/docs/>
 
 Both metric and imperial units are supported natively by the upstream
