@@ -13,25 +13,12 @@ limits).
 ## Installation
 
 ```bash
-# Recommended — install via the Spora CLI
 php bin/spora plugin:install spora-ai/spora-plugin-weather
-php bin/spora spora:install   # applies the plugin's migration
-
-# For development against a sibling git clone, pass --path:
-php bin/spora plugin:install spora-ai/spora-plugin-weather --path=/abs/path/to/checkout
-
-# Alternative — drop a clone into the Spora repo
-git clone https://github.com/spora-ai/spora-plugin-weather.git plugins/weather
-php bin/spora spora:install
-
-# Alternative — external path (no Spora checkout changes)
-git clone https://github.com/spora-ai/spora-plugin-weather.git /opt/spora-plugins/weather
-echo 'SPORA_PLUGINS_PATHS=/opt/spora-plugins/weather' >> .env
-php bin/spora spora:install
 ```
 
-After install, the plugin exposes a single agent-facing tool —
-`weather_api` — with four operations (see [Per-tool parameters](#per-tool-parameters)).
+For local development against a sibling checkout, pass `--path=/abs/path/to/checkout`.
+
+After install, the plugin exposes a single agent-facing tool — `weather_api` — with four operations (see [Per-tool parameters](#per-tool-parameters)).
 
 ## Configuration
 
