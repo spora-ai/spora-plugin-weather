@@ -1,26 +1,97 @@
-# WeatherPlugin
+# Weather Plugin for Spora
 
-WeatherAPI.com current conditions and forecasts for Spora agents.
+Adds [WeatherAPI.com](https://www.weatherapi.com) **current conditions,
+multi-day forecasts, location autocomplete, and astronomy (sunrise /
+sunset / moon phase)** data to
+[Spora](https://github.com/spora-ai/Spora) agents. Supports both metric
+and imperial units.
 
-**Status: placeholder** (`v0.1.0`). The real tool class is not in this repo
-yet — it will be added in a follow-up release (`v0.2.0`) once the B1–B7
-tool extraction lands in `spora-ai/spora-core`.
+Sign up at <https://www.weatherapi.com> — the free tier covers
+1,000,000 calls/month (paid plans start around $10/month for higher
+limits).
 
-For now this package:
+## Installation
 
-- Declares the `weather` plugin slug (visible in `php bin/spora plugin:list`)
-- Exposes an empty `tools()` hook (no tools contributed yet)
-- Boots cleanly in a Spora install via `composer require spora-ai/spora-plugin-weather:^0.1`
+```bash
+# Recommended — install via the Spora CLI
+php bin/spora plugin:install spora-ai/spora-plugin-weather
+php bin/spora spora:install   # applies the plugin's migration
 
-## Local development
+# For development against a sibling git clone, pass --path:
+php bin/spora plugin:install spora-ai/spora-plugin-weather --path=/abs/path/to/checkout
+
+# Alternative — drop a clone into the Spora repo
+git clone https://github.com/spora-ai/spora-plugin-weather.git plugins/weather
+php bin/spora spora:install
+
+# Alternative — external path (no Spora checkout changes)
+git clone https://github.com/spora-ai/spora-plugin-weather.git /opt/spora-plugins/weather
+echo 'SPORA_PLUGINS_PATHS=/opt/spora-plugins/weather' >> .env
+php bin/spora spora:install
+```
+
+After install, the plugin exposes a single agent-facing tool —
+`weather_api` — with four operations (see [Per-tool parameters](#per-tool-parameters)).
+
+## Configuration
+
+Settings → Tools → **Weather API**. The plugin reads its settings
+through `Spora\Services\ToolConfigService`; all settings can be left at
+defaults except `core.weatherapi.api_key`, which is required.
+
+| Setting | Required | Default | Notes |
+|---|---|---|---|
+| `core.weatherapi.api_key`        | **yes** | — | API key from <https://www.weatherapi.com>. Encrypted at rest by `ToolConfigService`; masked in the UI; never logged. |
+| `core.weatherapi.base_url`       | no      | `https://api.weatherapi.com/v1` | Override only if you proxy the API through your own gateway. |
+| `core.weatherapi.default_days`   | no      | `3`                              | Default forecast length when the agent doesn't pass `days`. Clamped to `1..3` because the free plan caps forecast at 3 days. |
+| `core.weatherapi.units`          | no      | `metric`                         | `metric` (°C, km/h) or `imperial` (°F, mph). Select in the admin UI. |
+| `core.weatherapi.http_timeout`   | no      | `10`                             | Seconds before an HTTP request fails. Falls back to `SPORA_TOOL_HTTP_TIMEOUT` env var. |
+
+The `q` location parameter accepts city names, `lat,lon`, US/UK/CA
+postal codes, METAR (`metar:EGLL`), IATA (`iata:DXB`), an IP address,
+`auto:ip`, or a search API `id:NNNNNN` (see the
+[WeatherAPI docs](https://www.weatherapi.com/docs/)).
+
+## Per-tool parameters
+
+The plugin exposes one tool (`weather_api`) with four operations. Pick
+the operation in the agent's tool call; on success the tool returns a
+human-readable text summary inside `ToolResult::ok`. It never throws — a
+single API failure surfaces as `ToolResult::fail` and the agent loop
+keeps running.
+
+| Operation | Endpoint | Description | Parameters | Returns |
+|---|---|---|---|---|
+| `current`   | `/current.json`   | Current conditions for a location. | `location` (string) | Condition text + code, temp / feels-like, wind / gusts, humidity, cloud cover, UV, precipitation, pressure, day/night, local time. |
+| `forecast`  | `/forecast.json`  | Multi-day forecast (clamped to 1–3 days on the free plan). | `location` (string), `days` (int 1–3, optional, falls back to `core.weatherapi.default_days`) | One block per day: date, condition, avg/high/low temp, max wind, chance of rain, UV index. |
+| `search`    | `/search.json`    | Autocomplete / resolve a location name. | `query` (string, ≥2 chars) | Up to ~10 matches: name, region, country, lat/lon, local time. |
+| `astronomy` | `/astronomy.json` | Sunrise, sunset, moonrise/moonset, moon phase and illumination. | `location` (string), `date` (`yyyy-MM-dd`, optional, default today) | All six astro fields for the given location and date. |
+
+All four operations are `enabledByDefault` and do not require human
+approval (`requiresApprovalByDefault: false`). Authentication is via
+`?key=<api_key>` query parameter on every request; the key is stripped
+from log lines.
+
+## Vendor
+
+- **Sign up & pricing**: <https://www.weatherapi.com> — free tier
+  1,000,000 calls/month, paid plans from ~$10/month.
+- **API documentation**: <https://www.weatherapi.com/docs/>
+
+Both metric and imperial units are supported natively by the upstream
+API — toggle between them with `core.weatherapi.units`.
+
+## Development
 
 ```bash
 composer install
-./vendor/bin/pest
+./vendor/bin/pest           # Pest tests
 ./vendor/bin/phpstan analyse --no-progress
 ./vendor/bin/php-cs-fixer fix --dry-run --diff
 ```
 
-## License
-
-MIT
+CI: `.github/workflows/ci.yml` — Pest on PHP 8.4, PHPStan, and
+php-cs-fixer dry-run. The `sonar` job uploads coverage to SonarCloud
+(project key `spora-ai_spora-plugin-weather`) so the `new_coverage`
+metric is measurable per PR; requires the `SONAR_TOKEN` secret in the
+repo. MIT license.
