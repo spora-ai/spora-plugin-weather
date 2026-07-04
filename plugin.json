@@ -2,11 +2,6 @@
   "$schema": "https://raw.githubusercontent.com/spora-ai/spora-core/v0.3.0/plugin.schema.json",
   "slug": "weather",
   "description": "WeatherAPI.com current conditions and forecasts for Spora agents.",
-  "class": "Spora\\\\Plugins\\\\Weather\\\\WeatherPlugin",
-  "icon": "puzzle",
-  "autoload": {
-    "psr-4": {
-      "Spora\\\\Plugins\\\\Weather\\\\": "src/"
-    }
-  }
+  "class": "Spora\\Plugins\\Weather\\WeatherPlugin",
+  "icon": "puzzle"
 }
