@@ -30,33 +30,33 @@ use Throwable;
 #[ToolOperation(name: 'search', description: 'Search for a location by name (autocomplete)', enabledByDefault: true, requiresApprovalByDefault: false)]
 #[ToolOperation(name: 'astronomy', description: 'Get sunrise, sunset, and moon phase data for a location', enabledByDefault: true, requiresApprovalByDefault: false)]
 #[ToolSetting(
-    key: 'core.weatherapi.api_key',
+    key: 'api_key',
     label: 'WeatherAPI.com Key',
     type: 'password',
     description: 'API key from weatherapi.com (free plan: 100k calls/month)',
     required: true,
 )]
 #[ToolSetting(
-    key: 'core.weatherapi.base_url',
+    key: 'base_url',
     label: 'Base URL',
     type: 'text',
     description: 'API base URL (default: https://api.weatherapi.com/v1)',
 )]
 #[ToolSetting(
-    key: 'core.weatherapi.default_days',
+    key: 'default_days',
     label: 'Default Forecast Days',
     type: 'text',
     description: 'Number of forecast days 1-3 on free plan (default: 3)',
 )]
 #[ToolSetting(
-    key: 'core.weatherapi.units',
+    key: 'units',
     label: 'Units',
     type: 'select',
     description: 'Metric or Imperial units',
     options: ['metric' => 'Metric (°C, km/h)', 'imperial' => 'Imperial (°F, mph)'],
 )]
 #[ToolSetting(
-    key: 'core.weatherapi.http_timeout',
+    key: 'http_timeout',
     label: 'HTTP Timeout',
     type: 'text',
     description: 'Seconds before an HTTP request fails (default: 10)',
@@ -175,7 +175,7 @@ final class WeatherApiTool extends AbstractTool
         }
 
         $settings = $this->configService->getEffectiveSettings(static::class, $agentId, $userId);
-        $defaultDays = (int) ($settings['core.weatherapi.default_days'] ?? 3);
+        $defaultDays = (int) ($settings['default_days'] ?? 3);
         $defaultDays = max(1, min(3, $defaultDays));
         $days = (int) ($arguments['days'] ?? $defaultDays);
         $days = max(1, min(3, $days));
@@ -321,7 +321,7 @@ final class WeatherApiTool extends AbstractTool
         string $logContext,
     ): ToolResult|array {
         $settings = $this->configService->getEffectiveSettings(static::class, $agentId, $userId);
-        $apiKey = $settings['core.weatherapi.api_key'] ?? '';
+        $apiKey = $settings['api_key'] ?? '';
         if (empty($apiKey)) {
             return new ToolResult(false, self::ERR_MISSING_API_KEY);
         }
@@ -408,7 +408,7 @@ final class WeatherApiTool extends AbstractTool
 
     private function effectiveBaseUrl(array $settings): string
     {
-        $baseUrl = $settings['core.weatherapi.base_url'] ?? null;
+        $baseUrl = $settings['base_url'] ?? null;
         if ($baseUrl === null || $baseUrl === '') {
             return self::DEFAULT_BASE_URL;
         }
@@ -417,8 +417,8 @@ final class WeatherApiTool extends AbstractTool
 
     private function effectiveTimeout(array $settings): int
     {
-        if (isset($settings['core.weatherapi.http_timeout']) && (int) $settings['core.weatherapi.http_timeout'] > 0) {
-            return (int) $settings['core.weatherapi.http_timeout'];
+        if (isset($settings['http_timeout']) && (int) $settings['http_timeout'] > 0) {
+            return (int) $settings['http_timeout'];
         }
         $envTimeout = (int) ($_ENV['SPORA_TOOL_HTTP_TIMEOUT'] ?? getenv('SPORA_TOOL_HTTP_TIMEOUT') ?: 0);
         return $envTimeout > 0 ? $envTimeout : 10;
@@ -426,7 +426,7 @@ final class WeatherApiTool extends AbstractTool
 
     private function effectiveUnits(array $settings): string
     {
-        $units = strtolower(trim((string) ($settings['core.weatherapi.units'] ?? 'metric')));
+        $units = strtolower(trim((string) ($settings['units'] ?? 'metric')));
         return $units === 'imperial' ? 'imperial' : 'metric';
     }
 }
