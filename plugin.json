@@ -3,5 +3,5 @@
   "slug": "weather",
   "description": "WeatherAPI.com current conditions and forecasts for Spora agents.",
   "class": "Spora\\Plugins\\Weather\\WeatherPlugin",
-  "icon": "puzzle"
+  "icon": "sun"
 }
