@@ -426,8 +426,8 @@ describe('WeatherApiTool', function (): void {
             $tool = new WeatherApiTool($config, $client);
 
             $schema = $tool->getParametersSchema();
-        } catch (\TypeError $e) {
-            throw new \PHPUnit\Framework\SkippedWithMessageException(
+        } catch (TypeError $e) {
+            throw new PHPUnit\Framework\SkippedWithMessageException(
                 'Waiting for spora-core bool|array $required: ' . $e->getMessage(),
             );
         }
