@@ -61,10 +61,10 @@ use Throwable;
     type: 'text',
     description: 'Seconds before an HTTP request fails (default: 10)',
 )]
-#[ToolParameter(name: 'location', type: 'string', description: 'Location query (city name, lat/lon, zip, etc.)', required: false)]
-#[ToolParameter(name: 'query', type: 'string', description: 'Search query for location autocomplete (min 2 chars)', required: false)]
-#[ToolParameter(name: 'days', type: 'integer', description: 'Number of forecast days (1-3 on free plan)', required: false, minimum: 1, maximum: 3)]
-#[ToolParameter(name: 'date', type: 'string', description: 'Date for astronomy data (yyyy-MM-dd, defaults to today)', required: false, format: 'date')]
+#[ToolParameter(name: 'location', type: 'string', description: 'Location query (city name, lat/lon, zip, etc.)', required: ['current', 'forecast', 'astronomy'])]
+#[ToolParameter(name: 'query', type: 'string', description: 'Search query for location autocomplete (min 2 chars)', required: ['search'])]
+#[ToolParameter(name: 'days', type: 'integer', description: 'Number of forecast days (1-3 on free plan)', required: ['forecast'], minimum: 1, maximum: 3)]
+#[ToolParameter(name: 'date', type: 'string', description: 'Date for astronomy data (yyyy-MM-dd, defaults to today)', required: ['astronomy'], format: 'date')]
 final class WeatherApiTool extends AbstractTool
 {
     private const DEFAULT_BASE_URL = 'https://api.weatherapi.com/v1';
