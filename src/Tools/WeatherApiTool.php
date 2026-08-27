@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Spora\Plugins\Weather\Tools;
 
 use Psr\Log\LoggerInterface;
+use Spora\Services\PrincipalContext;
 use Spora\Services\ToolConfigService;
 use Spora\Tools\AbstractTool;
 use Spora\Tools\Attributes\Tool;
 use Spora\Tools\Attributes\ToolOperation;
 use Spora\Tools\Attributes\ToolParameter;
 use Spora\Tools\Attributes\ToolSetting;
-use Spora\Services\PrincipalContext;
 use Spora\Tools\ValueObjects\ToolResult;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Throwable;
@@ -87,8 +87,7 @@ final class WeatherApiTool extends AbstractTool
         ?int $userId = null,
         ?int $taskId = null,
         ?PrincipalContext $context = null,
-    ): ToolResult
-    {
+    ): ToolResult {
         $action = $this->getOperationName($arguments);
 
         return match ($action) {
