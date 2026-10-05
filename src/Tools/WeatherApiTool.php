@@ -81,6 +81,12 @@ final class WeatherApiTool extends AbstractTool
         private readonly ?LoggerInterface $logger = null,
     ) {}
 
+    /**
+     * @param int|null $userId Deprecated: the owner now comes from
+     *                          `$context->ownerUserId`, which always held this same
+     *                          value. Removed from the interface in core 0.30.0 —
+     *                          read the context instead.
+     */
     public function execute(
         array $arguments,
         int $agentId,
@@ -88,13 +94,15 @@ final class WeatherApiTool extends AbstractTool
         ?int $taskId = null,
         ?PrincipalContext $context = null,
     ): ToolResult {
+        $ownerId = $context?->ownerUserId;
+
         $action = $this->getOperationName($arguments);
 
         return match ($action) {
-            'current'    => $this->current($arguments, $agentId, $userId),
-            'forecast'   => $this->forecast($arguments, $agentId, $userId),
-            'search'     => $this->search($arguments, $agentId, $userId),
-            'astronomy'  => $this->astronomy($arguments, $agentId, $userId),
+            'current'    => $this->current($arguments, $agentId, $ownerId),
+            'forecast'   => $this->forecast($arguments, $agentId, $ownerId),
+            'search'     => $this->search($arguments, $agentId, $ownerId),
+            'astronomy'  => $this->astronomy($arguments, $agentId, $ownerId),
             default      => new ToolResult(false, "Unknown action '{$action}'. Use one of: current, forecast, search, astronomy."),
         };
     }

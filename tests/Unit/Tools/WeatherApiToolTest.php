@@ -3,7 +3,9 @@
 declare(strict_types=1);
 
 use Psr\Log\LoggerInterface;
+use Spora\Models\Principal;
 use Spora\Plugins\Weather\Tools\WeatherApiTool;
+use Spora\Services\PrincipalContext;
 use Spora\Services\ToolConfigService;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
@@ -438,5 +440,39 @@ describe('WeatherApiTool', function (): void {
             ->toContain('search')
             ->toContain('astronomy');
         expect($schema['required'])->toContain('action');
+    });
+
+    it('scopes the settings lookup to the context owner, not the legacy user id', function (): void {
+        $config = Mockery::mock(ToolConfigService::class);
+        $config->allows('getEffectiveSettings')
+            ->with(WeatherApiTool::class, 1, 99)
+            ->andReturn(['api_key' => 'wapi_test_key']);
+
+        $client = Mockery::mock(HttpClientInterface::class);
+        $response = Mockery::mock(ResponseInterface::class);
+        $response->allows('getStatusCode')->andReturn(200);
+        $response->allows('toArray')->andReturn([
+            'location' => ['name' => 'Paris', 'country' => 'France', 'localtime' => '2026-04-23 14:00'],
+            'current' => [
+                'temp_c' => 18.5,
+                'feelslike_c' => 17.0,
+                'wind_kph' => 15.0,
+                'humidity' => 65,
+                'cloud' => 40,
+                'uv' => 5,
+                'is_day' => 1,
+                'condition' => ['text' => 'Partly cloudy', 'code' => 1003],
+            ],
+        ]);
+        $client->allows('request')->andReturn($response);
+
+        $tool = new WeatherApiTool($config, $client);
+
+        $context = new PrincipalContext(7, Principal::TYPE_USER, 99, 42);
+
+        $result = $tool->execute(['action' => 'current', 'location' => 'Paris'], 1, 42, null, $context);
+
+        expect($result->success)->toBeTrue()
+            ->and($result->content)->toContain('Paris');
     });
 });
