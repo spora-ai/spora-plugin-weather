@@ -470,7 +470,7 @@ describe('WeatherApiTool', function (): void {
 
         $context = new PrincipalContext(7, Principal::TYPE_USER, 99, 42);
 
-        $result = $tool->execute(['action' => 'current', 'location' => 'Paris'], 1, 42, null, $context);
+        $result = $tool->execute(['action' => 'current', 'location' => 'Paris'], 1, null, $context);
 
         expect($result->success)->toBeTrue()
             ->and($result->content)->toContain('Paris');
