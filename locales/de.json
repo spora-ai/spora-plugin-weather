@@ -3,6 +3,6 @@
   "API key from weatherapi.com (free plan: 100k calls/month)": "API-Schlüssel von weatherapi.com (kostenloser Tarif: 100.000 Aufrufe/Monat)",
   "API base URL (default: https://api.weatherapi.com/v1)": "Basis-URL der API (Standard: https://api.weatherapi.com/v1)",
   "Number of forecast days 1-3 on free plan (default: 3)": "Anzahl der Prognosetage 1–3 im kostenlosen Tarif (Standard: 3)",
-  "Metric or Imperial units": "Metrische oder imperative Einheiten",
+  "Metric or Imperial units": "Metrische oder Imperial-Einheiten",
   "Seconds before an HTTP request fails (default: 10)": "Sekunden, bis eine HTTP-Anfrage fehlschlägt (Standard: 10)"
 }
